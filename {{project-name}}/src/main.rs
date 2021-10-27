@@ -1,4 +1,4 @@
-use aya::Bpf;
+use aya::{Bpf, include_bytes_aligned};
 {% case program_type -%}
 {%- when "kprobe", "kretprobe" -%}
 use aya::programs::KProbe;
@@ -34,10 +34,9 @@ fn main() {
     }
 }
 
+#[allow(dead_code)]
 #[derive(Debug, StructOpt)]
 struct Opt {
-    #[structopt(short, long)]
-    path: String,
     {% if program_type == "xdp" or program_type == "classifier" -%}
     #[structopt(short, long, default_value = "eth0")]
     iface: String,
@@ -51,8 +50,11 @@ struct Opt {
 }
 
 fn try_main() -> Result<(), anyhow::Error> {
+    #[allow(dead_code)]
     let opt = Opt::from_args();
-    let mut bpf = Bpf::load_file(&opt.path)?;
+    let mut bpf = Bpf::load(include_bytes!(
+        "../../target/bpfel-unknown-none/debug/{{crate_name}}"
+    ))?;
     {% case program_type -%}
     {%- when "kprobe", "kretprobe" -%}
     let program: &mut KProbe = bpf.program_mut("{{crate_name}}")?.try_into()?;
@@ -92,7 +94,7 @@ fn try_main() -> Result<(), anyhow::Error> {
     program.load()?;
     program.attach("{{tracepoint_category}}", "{{tracepoint_name}}")?;
     {%- endcase %}
-    
+
     let running = Arc::new(AtomicBool::new(true));
     let r = running.clone();
 

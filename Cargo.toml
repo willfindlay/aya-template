@@ -1,2 +1,8 @@
 [workspace]
 members = ["{{project-name}}", "{{project-name}}-common", "xtask"]
+
+[patch.crates-io]
+aya = { git = "https://github.com/willfindlay/aya", branch = "{{branch-name}}" }
+
+[patch."http://github.com/aya-rs/aya"]
+aya = { git = "https://github.com/willfindlay/aya", branch = "{{branch-name}}" }

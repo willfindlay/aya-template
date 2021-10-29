@@ -22,3 +22,6 @@ panic = "abort"
 
 [workspace]
 members = []
+
+[patch."http://github.com/aya-rs/aya"]
+aya-bpf = { git = "https://github.com/willfindlay/aya", branch = "{{branch-name}}" }

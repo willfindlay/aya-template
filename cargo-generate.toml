@@ -2,6 +2,11 @@
 cargo_generate_version = ">=0.10.0"
 ignore = [".github", "test.sh"]
 
+[placeholders.branch-name]
+type = "string"
+prompt = "Which development branch would you like to use?"
+default = "main"
+
 [placeholders.program_type]
 type = "string"
 prompt = "Which type of eBPF program?"
